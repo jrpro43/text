@@ -1,5 +1,5 @@
 // ============================================================
-// Clow Text to Web - AI Website Generator
+// Clow Text to Web - AI Website Generator (Vercel Ready)
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,11 +8,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const promptInput = document.getElementById('promptInput');
     const generateBtn = document.getElementById('generateBtn');
     const resultFrame = document.getElementById('resultFrame');
+    const statusBadge = document.getElementById('statusBadge');
 
     // ===== CONFIG =====
     // 🔑 Replace with your actual Qwen API key
     const API_KEY = 'sk-ws-H.IRHEPY.hSui.MEYCIQDiK2-tuF51VD1_O2uN6WudTu_AQK85sXR7Hqo6TVHzJgIhAKJ-3OhGD1TxKyXKjaMhSXSAT5hc629TbFfJul1MHimf';
     const API_URL = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
+
+    // ===== HELPER: Update Status Badge =====
+    function setStatus(text, type = '') {
+        statusBadge.textContent = text;
+        statusBadge.className = 'output-badge' + (type ? ' ' + type : '');
+    }
 
     // ===== INITIAL WELCOME =====
     function setWelcomeMessage() {
@@ -47,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </body>
             </html>
         `;
+        setStatus('Ready');
     }
     setWelcomeMessage();
 
@@ -59,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Show loading state
+        setStatus('Generating...', 'loading');
         resultFrame.srcdoc = `
             <html>
                 <head><style>
@@ -129,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             let generatedHTML = data?.output?.choices?.[0]?.message?.content || '';
 
-            // Clean up markdown code fences if present
+            // Clean up markdown code fences
             generatedHTML = generatedHTML.replace(/^```html\s*/i, '').replace(/\s*```$/i, '');
             generatedHTML = generatedHTML.replace(/^```\s*/i, '').replace(/\s*```$/i, '');
 
@@ -139,9 +148,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Inject the generated HTML
             resultFrame.srcdoc = generatedHTML;
+            setStatus('Done ✅');
 
         } catch (error) {
             console.error('Generation error:', error);
+            setStatus('Error', 'error');
             resultFrame.srcdoc = `
                 <html>
                     <head><style>
@@ -197,4 +208,4 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('✨ Clow Text to Web ready');
     console.log('📱 Developed by Hemat');
     console.log('🔗 tiktok.com/@devhemat');
-});
+}); 
