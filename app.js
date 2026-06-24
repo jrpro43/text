@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== CONFIG =====
     // 🔑 Replace with your actual Qwen API key
-    const API_KEY = 'sk-sk-ws-H.IRHEPY.hSui.MEYCIQDiK2-tuF51VD1_O2uN6WudTu_AQK85sXR7Hqo6TVHzJgIhAKJ-3OhGD1TxKyXKjaMhSXSAT5hc629TbFfJul1MHimf';
+    const API_KEY = 'sk-ws-H.IRHEPY.hSui.MEYCIQDiK2-tuF51VD1_O2uN6WudTu_AQK85sXR7Hqo6TVHzJgIhAKJ-3OhGD1TxKyXKjaMhSXSAT5hc629TbFfJul1MHimf';
     const API_URL = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
 
     // ===== INITIAL WELCOME =====
@@ -197,4 +197,4 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('✨ Clow Text to Web ready');
     console.log('📱 Developed by Hemat');
     console.log('🔗 tiktok.com/@devhemat');
-}); 
+});
