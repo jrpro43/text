@@ -1,27 +1,26 @@
 // ============================================================
-// Clow Text to Web - AI Website Generator (Vercel Ready)
+// Clow Text to Web - Gemini AI Version
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ===== DOM REFS =====
     const promptInput = document.getElementById('promptInput');
     const generateBtn = document.getElementById('generateBtn');
     const resultFrame = document.getElementById('resultFrame');
     const statusBadge = document.getElementById('statusBadge');
 
-    // ===== CONFIG =====
-    // 🔑 Replace with your actual Qwen API key
-    const API_KEY = 'sk-ws-H.IRHEPY.hSui.MEYCIQDiK2-tuF51VD1_O2uN6WudTu_AQK85sXR7Hqo6TVHzJgIhAKJ-3OhGD1TxKyXKjaMhSXSAT5hc629TbFfJul1MHimf';
-    const API_URL = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
+    // ===== د خپل Gemini API کیلي دلته واچوئ =====
+    // د ترلاسه کولو لینک: https://ai.google.dev/gemini-api
+    const API_KEY = 'AQ.Ab8RN6IYcfuSCQvBpU2gk1TW6ST0cmYOrg_h0jY3e_YR2brQxw'; // ← خپله کیلي دلته کاپي کړئ
+    
+    // ===== Gemini API Endpoint =====
+    const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
-    // ===== HELPER: Update Status Badge =====
     function setStatus(text, type = '') {
         statusBadge.textContent = text;
         statusBadge.className = 'output-badge' + (type ? ' ' + type : '');
     }
 
-    // ===== INITIAL WELCOME =====
     function setWelcomeMessage() {
         resultFrame.srcdoc = `
             <html>
@@ -50,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="icon">✦</div>
                     <h2>Ready to create</h2>
                     <p>Describe your dream website in the prompt box and hit <strong>Generate</strong></p>
-                    <span class="hint">⚡ Powered by Qwen AI</span>
+                    <span class="hint">⚡ Powered by Gemini AI</span>
                 </body>
             </html>
         `;
@@ -58,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     setWelcomeMessage();
 
-    // ===== GENERATE FUNCTION =====
     async function generateWebsite(promptText) {
         const trimmed = promptText.trim();
         if (!trimmed) {
@@ -66,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Show loading state
         setStatus('Generating...', 'loading');
         resultFrame.srcdoc = `
             <html>
@@ -96,57 +93,78 @@ document.addEventListener('DOMContentLoaded', () => {
                 </style></head>
                 <body>
                     <div class="spinner"></div>
-                    <p>🤖 AI is building your website...</p>
+                    <p>🤖 Gemini is building your website...</p>
                 </body>
             </html>
         `;
 
         try {
-            const response = await fetch(API_URL, {
+            // د Gemini API غوښتنه
+            const response = await fetch(`${API_URL}?key=${API_KEY}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${API_KEY}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: 'qwen-turbo',
-                    input: {
-                        messages: [
-                            {
-                                role: 'system',
-                                content: `You are an expert web developer. Generate a complete, beautiful, and fully functional HTML document (including CSS and JavaScript inside) based on the user's description. Return ONLY the raw HTML code, with no markdown formatting, no explanations, no backticks. The code must work when opened directly in a browser. Use modern design, gradients, animations, and responsive layouts.`
-                            },
-                            {
-                                role: 'user',
-                                content: `Create a stunning, complete website with this description: ${trimmed}`
-                            }
-                        ]
-                    },
-                    parameters: {
-                        result_format: 'message',
-                        temperature: 0.7,
-                        max_tokens: 4096
-                    }
+                    contents: [
+                        {
+                            parts: [
+                                {
+                                    text: `You are an expert web developer. Generate a complete, beautiful, and fully functional HTML document (including CSS and JavaScript inside) based on the user's description. Return ONLY the raw HTML code, with no markdown formatting, no explanations, no backticks. The code must work when opened directly in a browser. Use modern design, gradients, animations, and responsive layouts.
+                                    
+                                    User description: ${trimmed}
+                                    
+                                    IMPORTANT: Return ONLY the HTML code. No markdown, no explanations, no backticks. Start directly with <html> or <!DOCTYPE html>.`
+                                }
+                            ]
+                        },
+                        generationConfig: {
+                            temperature: 0.7,
+                            maxOutputTokens: 8192,
+                            topP: 0.95
+                        }
+                    ]
                 })
             });
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(`API error ${response.status}: ${errorData?.message || response.statusText}`);
+                let errorMsg = `API error ${response.status}`;
+                if (errorData?.error?.message) {
+                    errorMsg = errorData.error.message;
+                } else if (errorData?.error?.code) {
+                    errorMsg = `${errorData.error.code}: ${errorData.error.message || 'Unknown error'}`;
+                }
+                throw new Error(errorMsg);
             }
 
             const data = await response.json();
-            let generatedHTML = data?.output?.choices?.[0]?.message?.content || '';
+            
+            // د Gemini ځواب استخراج
+            let generatedHTML = '';
+            if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+                generatedHTML = data.candidates[0].content.parts[0].text;
+            } else {
+                throw new Error('Invalid response format from Gemini API');
+            }
 
-            // Clean up markdown code fences
+            // د مارکډاون پاکول
             generatedHTML = generatedHTML.replace(/^```html\s*/i, '').replace(/\s*```$/i, '');
             generatedHTML = generatedHTML.replace(/^```\s*/i, '').replace(/\s*```$/i, '');
+            
+            // که چیرې د html یا DOCTYPE سره پیل نه شي، نو دا ممکن د کوډ پاک وي
+            if (!generatedHTML.trim().startsWith('<') && !generatedHTML.trim().startsWith('<!')) {
+                // هڅه وکړئ چې د HTML ټګونه ومومئ
+                const htmlMatch = generatedHTML.match(/<html[\s\S]*<\/html>/i);
+                if (htmlMatch) {
+                    generatedHTML = htmlMatch[0];
+                }
+            }
 
             if (!generatedHTML || generatedHTML.length < 30) {
                 throw new Error('AI returned empty or incomplete response.');
             }
 
-            // Inject the generated HTML
             resultFrame.srcdoc = generatedHTML;
             setStatus('Done ✅');
 
@@ -179,19 +197,17 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="error-icon">⚠️</div>
                         <h3>Something went wrong</h3>
                         <p>${error.message || 'Failed to generate website. Please try again.'}</p>
-                        <span class="detail">Make sure your API key is valid</span>
+                        <span class="detail">API Key: ${API_KEY ? '✅ Provided' : '❌ Missing'}</span>
                     </body>
                 </html>
             `;
         }
     }
 
-    // ===== EVENT LISTENERS =====
     generateBtn.addEventListener('click', () => {
         generateWebsite(promptInput.value);
     });
 
-    // Ctrl+Enter shortcut
     promptInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
             e.preventDefault();
@@ -199,13 +215,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Auto-resize textarea
     promptInput.addEventListener('input', () => {
         promptInput.style.height = 'auto';
         promptInput.style.height = Math.min(promptInput.scrollHeight, 300) + 'px';
     });
 
-    console.log('✨ Clow Text to Web ready');
+    console.log('✨ Clow Text to Web (Gemini) ready');
     console.log('📱 Developed by Hemat');
     console.log('🔗 tiktok.com/@devhemat');
 }); 
