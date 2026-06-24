@@ -7,14 +7,13 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
     <div id="app">
         <header class="app-header">
             <div class="logo">
                 <span class="logo-icon">✦</span>
                 <h1>Clow <span>Text to Web</span></h1>
             </div>
-            <p class="tagline">Turn your ideas into live websites with AI</p>
+            <p class="tagline">Turn ideas into websites with AI</p>
         </header>
 
         <main>
@@ -23,7 +22,7 @@
                     <label for="promptInput">Describe your website</label>
                     <textarea 
                         id="promptInput" 
-                        placeholder="Example: A modern portfolio with a dark theme, animated gradient background, navigation bar, hero section with my name 'Hemat', skills section, and a contact form..."
+                        placeholder="Example: A modern dark-themed portfolio with gradient text, navigation bar, hero section with 'Hemat', skills, projects grid, and a contact form..."
                         rows="6"
                     ></textarea>
                 </div>
@@ -35,7 +34,7 @@
             <section class="output-section">
                 <div class="output-header">
                     <span class="output-label">📄 Live Preview</span>
-                    <span class="output-badge">Generated</span>
+                    <span class="output-badge" id="statusBadge">Ready</span>
                 </div>
                 <div id="outputContainer">
                     <iframe id="resultFrame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
@@ -56,4 +55,4 @@
 
     <script src="app.js"></script>
 </body>
-</html>
+</html> 
