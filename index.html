@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Clow Text to Web</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <div id="app">
+        <header class="app-header">
+            <div class="logo">
+                <span class="logo-icon">✦</span>
+                <h1>Clow <span>Text to Web</span></h1>
+            </div>
+            <p class="tagline">Turn your ideas into live websites with AI</p>
+        </header>
+
+        <main>
+            <section class="input-section">
+                <div class="input-wrapper">
+                    <label for="promptInput">Describe your website</label>
+                    <textarea 
+                        id="promptInput" 
+                        placeholder="Example: A modern portfolio with a dark theme, animated gradient background, navigation bar, hero section with my name 'Hemat', skills section, and a contact form..."
+                        rows="6"
+                    ></textarea>
+                </div>
+                <button id="generateBtn" class="btn-primary">
+                    <span class="btn-icon">🚀</span> Generate Website
+                </button>
+            </section>
+
+            <section class="output-section">
+                <div class="output-header">
+                    <span class="output-label">📄 Live Preview</span>
+                    <span class="output-badge">Generated</span>
+                </div>
+                <div id="outputContainer">
+                    <iframe id="resultFrame" sandbox="allow-scripts allow-modals allow-same-origin"></iframe>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <div class="footer-info">
+                <span>Developed with ❤️ by <strong>Hemat</strong></span>
+            </div>
+            <a href="https://tiktok.com/@devhemat" target="_blank" rel="noopener noreferrer" class="tiktok-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.11-.59-1.62-.93-.01 2.92.01 5.84-.02 8.76-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.3-.69.3-1.06.09-2.79.05-5.57.06-8.36.01-.06.01-.12.01-.18z"/></svg>
+                @devhemat
+            </a>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
